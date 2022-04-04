@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if current_user.is_authenticated %}
+<!-- TO FIX: PURCHASES CURRENTLY BROKEN DUE TO NAMING CONVENTIONS -->
+<h1>Your Cart:</h1>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Unit Price</th>
+      <th scope="col">Total Price</th>
+      <th scope="col">Options</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+      <tr>
+        <th scope="row">{{item.pid}}</th>
+        <th scope="row">{{item.name}}</th>
+
+        <th scope="row">{{item.p_quantity}}
+
+          <div >
+            <div style="float: left"> 
+              <form action="{{url_for('users.removeOne', pid = item.pid, uid = current_user.uid)}}" method="POST">
+                <input type="submit" class = "btn btn-secondary" value="-1"> 
+            </form>
+            </div>
+
+            <div style="float: left"> 
+              <form action="{{url_for('users.Add', pid = item.pid, uid = current_user.uid)}}" method="POST">   
+                <input type="submit" class = "btn btn-secondary" value="+1"> 
+                </form>
+            </div>
+        </div>
+
+        </th>
+
+        <th scope="row">{{item.unit_price}}</th>
+        <th scope="row">{{item.unit_price * item.p_quantity}}</th>
+
+        <th scope="row">
+          
+          <form action="{{url_for('users.remove_item', pid = item.pid, uid = current_user.uid)}}" method="POST">   
+            <input type="submit" class = "btn btn-secondary" value="Remove from Cart"> 
+          </form>
+
+          <form action="{{url_for('saveforlaterPage.add_Cart', pid = item.pid, uid = current_user.uid)}}" method="POST">   
+            <input type="submit" class = "btn btn-secondary" value="Save for Later"> 
+            </form>
+        
+
+        </th>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<h3>Cart Total: {{'%0.2f' %total}}</h3> 
+
+<a href="{{ url_for('saveforlaterPage.saveforlaterPage') }}" type="button" class="btn btn-light">Go to Save For Later</a>
+
+{% if current_user.get_address() %}
+  <a href="{{ url_for('orderPage.orderPage') }}" type="button" class="btn btn-light">Checkout</a>
+{% else %}
+  <h5>Please update your profile to include a shipping address.</h5> 
+  <a href="{{ url_for('profile.profile') }}" type="button" class="btn btn-light">Update Profile</a>
+{% endif %}
+
+{% if message != None%}
+<h6>{{message}}</h6> 
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Sellers:</h1>
+<div class="album py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      {% for seller in slrs%}
+      <div class="col-md-4">
+        <div class="card mb-4 box-shadow h-100">
+          <!-- <img class="card-img-top" src="{{url_for('static', filename='blank.png')}}" alt="Card image cap"> -->
+
+          <div class="card-body">
+            <h5 class="card-title">{{seller.firstname}} {{seller.lastname}}</h5>
+            <p class="card-text">Seller ID: {{seller.sid}}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <a href="{{ url_for('seller.seller', uid=seller.sid) }}"
+                  class="btn btn-sm btn-outline-secondary">View</a>
+                <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> -->
+                {% if current_user.is_authenticated %}
+
+                {% endif %}
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Order Confirmation:</h2>
+<h4>Ordered Items</h4>
+<table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Product ID</th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Price</th>
+        <th scope="col">Status</th>
+        <th scope="col">Fulfillment Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+        <tr>
+          <th scope="row">{{item.pid}}</th>
+          <th scope="row">{{item.name}}</th>
+          <th scope="row">{{item.p_quantity}}</th>
+          <th scope="row">{{item.unit_price}}</th>
+          {% if item.fulfilled == false %}
+            <th scope="row">Not Fulfilled</th>
+            {% endif %}
+
+            {% if item.fulfilled == true %}
+            <th scope="row">Fulfilled</th>
+            {% endif %}
+          {% if not item.fulfillment_time %}
+            <th scope="row">N/A</th>
+          {% else %}
+            <th scope="row">{{item.fulfillment_time}}</th>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}

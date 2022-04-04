@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<h1>Add Seller Review Comment</h1>
+<h2>Review of {{sellername.firstname}} {{sellername.lastname}} by user {{sellerreviews.uid}}</h2>
+<h3>Rating: {{sellerreviews.rating}}/5</h2>
+<h3>Feedback: {{sellerreviews.comments}}</h3>
+<h3>Votes: {{sellerreviews.votes}}</h3>
+<h3>Time: {{sellerreviews.time_reviewed}}</h3>
+
+<form action="" method="post">
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.comment.label }}<br/>
+    {{ form.comment(cols = 100, rows = 10) }}<br/>
+    {% for error in form.comment.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>{{ form.submit(class_="btn btn-secondary") }}</p>
+</form>
+
+  <form action='/sr_comments/seller{{sellername.uid}}/user{{sellerreviews.uid}}/delete_comment/reviewer{{current_user.uid}}' method="post">
+    <input type="submit" name="sellerreviews" class = "btn btn-secondary" value="Delete Comment" />
+  </form>
+
+  <form action='/sr_comments/seller{{sellername.uid}}/user{{sellerreviews.uid}}/0' method="post">
+    <input type="submit" name="sellerreviews" class = "btn btn-secondary" value="Cancel" />
+  </form>
+
+
+
+{% endblock %}

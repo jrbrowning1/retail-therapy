@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<img style="max-width: 400px; max-height: 600px" src="{{productinfo.image}}" align="right" alt="{{productinfo.name}}">
+<a href="{{ url_for('index.index') }}" type="button" class="btn btn-secondary">Return to Products</a>
+<br><br>
+<h2>Product: {{productinfo.name}}</h2>
+<h3>Price: {{productinfo.price}}</h3>
+<h3>Description: {{productinfo.description}}</h3>
+<h3>Category: {{productinfo.category}}</h3>
+{% if product_rating.avg %}
+  <h3>Rating: {{product_rating.avg}}</h3>
+{% else %}
+  <h3>No ratings yet!</h3>
+{% endif %}
+{% if current_user.is_authenticated %}
+                
+                {% if productinfo.available == true  %}
+                <form action="{{url_for('users.addToCart',  pid = productinfo.pid, uid = current_user.uid)}}" method="POST"> 
+                  <button class="btn btn-secondary" type="submit">Add to Cart</button>
+                </form>
+
+                {% else %}
+                <form action="{{url_for('users.addToCart',  pid = productinfo.pid, uid = current_user.uid)}}" method="POST"> 
+                  <button class="btn btn-secondary" type="submit" disabled>Add to Cart</button>
+                </form>
+                <h6>this product is currently out of stock</h6>
+
+                {% endif %}
+
+                <br>
+
+                {% if productreviewcheck == false  %}
+
+                <form action='/addproductreview/product{{productinfo.pid}}/reviewer{{current_user.uid}}' method="post">
+                  <button class="btn btn-secondary" type="submit">Add Review</button>
+                </form> 
+                {% endif %}
+{% endif %}
+<br>
+<a href="{{ url_for('productreviews.ProductReviews', product_number=productinfo.pid, number = 0)}}" type="button" class="btn btn-secondary">See Product Reviews</a>
+
+{% if productinfo.available %}
+<table class='table table-hover table-bordered table=sort container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Seller</th>
+      <th scope="col">Quantity in Stock</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if sellers %}
+    {% for item in sellers%}
+      <tr>
+        <th scope="row">{{item.seller_id}}</th>
+        <td>{{item.in_stock}}</td>
+      </tr>
+    {% endfor %}
+    {% endif %}
+  </tbody>
+</table>
+{% endif %}
+
+{% endblock %}

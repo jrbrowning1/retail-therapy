@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<img style="max-width: 400px; max-height: 600px" src="{{productname.image}}" align="right" alt="">
+<form action='/oneproduct/{{productname.pid}}' method="post">
+  <input type="submit" name="productreviews" class = "btn btn-secondary" value="Back to Product Page" />
+</form>
+<br>
+<h2>{{productname.name}}</h2>
+<h3>Product ID: {{productname.pid}}</h3>
+<h3>Average Rating: {{productreviewstats.average}}/5</h3>
+<h3># of Reviews: {{productreviewstats.number}}</h3>
+
+{% if current_user.is_authenticated %}
+  {% if productreviewcheck == false  %}
+<form action='/addproductreview/product{{productname.pid}}/reviewer{{current_user.uid}}' method="post">
+  <input type="submit" name="review_details" class = "btn btn-secondary" value="Add Review" />
+</form>
+<br> 
+  {% endif %}
+{% endif %}
+
+<table class='table table-hover table-bordered table=sort container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Date</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Comments</th>
+      <th scope="col">Votes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in productreviews%}
+      <tr>
+        <th scope="row">{{review.uid}}</th>
+        <td>{{review.time_reviewed}}</td>
+        <td>{{review.rating}}</td>
+        <td>{{review.comments}}</td>
+        <td>
+          <div>
+          {{review.votes}}
+          </div>
+        <div style = 'float: left'>
+        <form action='/pr_comments/product{{review.pid}}/user{{review.uid}}/0' method="post">
+          <input type="submit" name="review_details" class = "btn btn-secondary" value="Details" />
+        </form> 
+        </div>
+        {% if current_user.uid == review.uid %}
+        <div style = 'float: left'>
+          <form action='/editproductreview/product{{review.pid}}/reviewer{{review.uid}}' method="post">
+            <input type="submit" name="review_details" class = "btn btn-secondary" value="Edit" />
+          </form> 
+        </div>
+        {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+{% if number > 0 %}
+<a href="{{ url_for('productreviews.ProductReviews', product_number=productinfo.pid, number = (number-10) )}}" type="button" class="btn btn-secondary">Previous Reviews</a>
+{% endif %}
+
+{% if total > number+10%}
+<a href="{{ url_for('productreviews.ProductReviews', product_number=productinfo.pid, number = (number+10) )}}" type="button" class="btn btn-secondary">More Reviews</a>
+{% endif %}
+{% endblock %}

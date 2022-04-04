@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Add Affirmation &#128302; </h1>
+
+<form action="" method="post">
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.affirmation.label }}<br/>
+    {{ form.affirmation(size=32) }}<br/>
+    {% for error in form.affirmation.errors %}
+    <span style="color: #D24694;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>{{ form.submit(class_="btn btn-secondary") }}</p>
+</form>
+
+
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>{{sellername.firstname}} {{sellername.lastname}}</h2>
+<h3>Seller ID: {{sellername.uid}}</h3>
+{% if sellerreviewstats.average %}
+  <h3>Average Rating: {{sellerreviewstats.average}}/5</h3>
+{% endif %}
+<h3># of Reviews: {{sellerreviewstats.number}}</h3>
+
+{% if current_user.is_authenticated %}
+{% if SRcheck == false  %}
+
+<form action='/addsellerreview/seller{{sellername.uid}}/reviewer{{current_user.uid}}' method="POST">
+  <input type="submit" name="review_details" class="btn btn-secondary" value="Add Review" />
+</form> 
+{% endif %}
+{% endif %}
+
+<a href="{{ url_for('seller.seller', uid=sellername.uid) }}"
+                  class="btn btn-secondary">Back to Seller Page</a>
+
+<table class='table table-hover table-bordered table=sort container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Date</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Comments</th>
+      <th scope="col">Votes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in sellerreviews%}
+      <tr>
+        <th scope="row">{{review.uid}}</th>
+        <td>{{review.time_reviewed}}</td>
+        <td>{{review.rating}}</td>
+        <td>{{review.comments}}</td>
+        <td>
+          <div>
+            {{review.votes}}
+          </div>
+          <div style = 'float: left'>
+            <form action='/sr_comments/seller{{review.seller_id}}/user{{review.uid}}/0' method="post">
+            <input type="submit" name="review_details" class = "btn btn-secondary" value="Details" />
+          </form> 
+          </div>
+          {% if current_user.uid == review.uid %}
+          <div style = 'float: left'>
+            <form action='/editsellerreview/seller{{review.seller_id}}/reviewer{{review.uid}}' method="post">
+              <input type="submit" name="review_details" class = "btn btn-secondary" value="Edit" />
+            </form> 
+          </div>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if number > 0 %}
+<a href="{{ url_for('sellerreviews.SellerReviews', seller_id=sellername.uid, number = 0) }}" type="button" class="btn btn-secondary">Previous Reviews</a>
+{% endif %}
+
+{% if total > number+10%}
+<a href="{{ url_for('sellerreviews.SellerReviews', seller_id=sellername.uid, number = 0) }}" type="button" class="btn btn-secondary">More Reviews</a>
+{% endif %}
+
+{% endblock %}

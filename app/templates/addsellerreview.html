@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<h1>Add Seller Review</h1>
+<h2>{{sellerinfo.name}}</h2>
+<h3>Seller ID: {{sellerinfo.uid}}</h3>
+{% if sellerreviewstats.average %}
+  <h3>Average Rating: {{sellerreviewstats.average}}/5</h3>
+{% endif %}
+<h3># of Reviews: {{sellerreviewstats.number}}</h3>
+
+<form action="" method="post">
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.rating.label }}<br/>
+    {{ form.rating(size=32) }}<br/>
+    {% for error in form.rating.errors %}
+    <span style="color: #D24694;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.comment.label }}<br/>
+    {{ form.comment(cols = 100, rows = 10) }}<br/>
+    {% for error in form.comment.errors %}
+    <span style="color: #D24694;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>{{ form.submit(class_="btn btn-secondary") }}</p>
+</form>
+
+<form action='/sellerreviews/{{sellerinfo.uid}}/0' method="post">
+    <input type="submit" name="sellerreviews" class = "btn btn-secondary" value="Cancel" />
+</form>
+
+
+{% endblock %}

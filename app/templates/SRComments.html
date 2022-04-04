@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Review of {{sellername.firstname}} by user {{sellerreviews.uid}}</h2>
+<h3>Rating: {{sellerreviews.rating}}/5</h2>
+<h3>Feedback: {{sellerreviews.comments}}</h3>
+<h3>Votes: {{sellerreviews.votes}}</h3>
+<h3>Time: {{sellerreviews.time_reviewed}}</h3>
+
+
+{% if current_user.is_authenticated %}
+<form action='/addsr_comment/seller{{sellername.uid}}/user{{sellerreviews.uid}}/reviewer{{current_user.uid}}' method="post">
+  <input type="submit" name="review_details" class="btn btn-secondary" value="Add Comment" />
+</form> 
+
+<form action="{{url_for('sr_comments.upvote',  seller_id = sellername.uid, user_id = sellerreviews.uid)}}" method="POST"> 
+  <button class="btn btn-secondary" type="submit">Upvote Review</button>
+</form> 
+
+<form action="{{url_for('sr_comments.downvote',  seller_id = sellername.uid, user_id = sellerreviews.uid)}}" method="POST"> 
+  <button class="btn btn-secondary" type="submit">Downvote Review</button>
+</form> 
+
+{% endif %}
+
+<form action='/sellerreviews/{{sellername.uid}}/0' method="post">
+    <input type="submit" name="sellerreviews" class="btn btn-secondary" value="Back to Seller Reviews" />
+</form>
+
+
+
+<table class='table table-hover table-bordered table=sort container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Date</th>
+      <th scope="col">Comment</th>
+      <th scope="col">Votes</th>
+      {% if current_user.is_authenticated %}
+      <th scope="col">Feedback</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for comment in sellerreviewcomments%}
+      <tr>
+        <th scope="row">{{comment.rid}}</th>
+        <td>{{comment.time_commented}}</td>
+        <td>{{comment.comment}}</td>
+        <td>{{comment.votes}}</td>
+        {% if current_user.is_authenticated %}
+        <td>
+          <div>
+            <div style = 'float: left'>
+              <form action="{{url_for('sr_comments.upvote_comment',  seller_id = sellername.uid, user_id = sellerreviews.uid, reviewer_id = comment.rid)}}" method="POST"> 
+                <button class="btn btn-secondary" type="submit">+1</button>
+              </form> 
+            </div>
+            <div style = 'float: left'>
+              <form action="{{url_for('sr_comments.downvote_comment',  seller_id = sellername.uid, user_id = sellerreviews.uid, reviewer_id = comment.rid)}}" method="POST"> 
+                <button class="btn btn-secondary" type="submit">-1</button>
+              </form>
+            </div>
+          </div>
+          {% if current_user.uid == comment.rid %}
+          <form action='/editsr_comment/seller{{sellername.uid}}/user{{comment.uid}}/reviewer{{comment.rid}}' method="post">
+            <input type="submit" name="review_details" class = "btn btn-secondary" value="Edit" />
+          </form> 
+          {% endif %}
+        </td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if number > 0 %}
+<form action='/sr_comments/seller{{sellername.uid}}/user{{sellerreviews.uid}}/{{number-10}}' method="post">
+  <input type="submit" name="review_details"class="btn btn-secondary"  value="Previous Comments" />
+</form>
+{% endif %}
+
+{% if total > number+10%}
+<form action='/sr_comments/seller{{sellername.uid}}/user{{sellerreviews.uid}}/{{number+10}}' method="post">
+  <input type="submit" name="review_details"class="btn btn-secondary"  value="More Comments" />
+</form>
+{% endif %}
+
+{% endblock %}

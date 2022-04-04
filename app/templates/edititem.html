@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Edit Item</h1>
+<h4>ID: {{pid}}</h4>
+
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+      {{ form.productname.label }}<br/>
+      {{ form.productname(size=32) }}<br/>
+      {% for error in form.productname.errors %}
+      <span style="color: #D24694;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p>
+      {{ form.price.label }}<br/>
+      {{ form.price(size=32) }}<br/>
+      {% for error in form.price.errors %}
+      <span style="color: #D24694;">[{{ error }}]</span>
+      {% endfor %}
+      {% if form.price.errors %}
+      <span style="color: #D24694;">[{{ "Please input a decimal number." }}]</span>
+      {% endif %}
+    </p>
+    <p>
+      {{ form.quantity.label }}<br/>
+      {{ form.quantity(size=32) }}<br/>
+      {% for error in form.quantity.errors %}
+      <span style="color: #D24694;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p>
+      {{ form.description.label }}<br/>
+      {{ form.description(size=32) }}<br/>
+      {% for error in form.description.errors %}
+      <span style="color: #D24694;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p>
+      {{ form.image.label }}<br/>
+      {{ form.image(size=32) }}<br/>
+      {% for error in form.image.errors %}
+      <span style="color: #D24694;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p>
+      {{ form.category.label }}<br/>
+      {{ form.category }}<br/>
+      {% for error in form.category.errors %}
+      <span style="color: #D24694;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    {{ form.submit(class_="btn btn-black") }}
+  </form>
+
+{% endblock %}

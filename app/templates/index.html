@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<h1>Product Search</h1>
+<div class="dropdown" style="display: inline-block;">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+    aria-expanded="false">
+    Search by Category
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+    {% for category in categories%}
+    <li><a class="dropdown-item" href="{{ url_for('prodsearch.ProductSearch', category=category, number=0) }}">{{category}}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+<div class="mb-3" style="display: inline-block;">
+  <input type="text" class="form-control" id="keyword-search-input" placeholder="Search">
+</div>
+<div style="display: inline-block;">
+  <button id="prod-keyword-search" type="button" class="btn btn-primary" onclick="searchByKeyword()" disabled="true"><i
+      class="bi bi-search"></i></button>
+</div>
+
+
+<h2>Top Products:</h2>
+<div class="album py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      {% for product in avail_products%}
+      <div class="col-md-4">
+        <div class="card mb-4 box-shadow h-100">
+          <img class="card-img-top" src="{{product.image}}" alt="Card image cap" style="max-width: 24rem; max-height: 21rem;">
+
+          <div class="card-body">
+            <h5 class="card-title">{{product.name}}</h5>
+            <p class="card-text">Price: {{'%0.2f' % product.price}}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <a href="{{ url_for('oneproduct.OneProducts', product_number=product.pid) }}"
+                  class="btn btn-sm btn-outline-secondary" style="margin-right:5px;">View</a>
+                {% if current_user.is_authenticated %}
+                  
+                <form action="{{url_for('users.addToCart', pid = product.pid, uid = current_user.uid)}}" method="POST">
+                  <button class="btn btn-sm btn-outline-secondary" type="submit">Add to Cart</button>
+                </form>
+                {% endif %}
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+
+  // don't allow someone to click the search button until they have entered text
+  $('#keyword-search-input').on("keyup", action);
+  function action() {
+    if ($('#keyword-search-input').val().length > 0) {
+      $('#prod-keyword-search').prop("disabled", false);
+    } else {
+      $('#prod-keyword-search').prop("disabled", true);
+    }
+  }
+
+  // allows for button to call href
+  function searchByKeyword() {
+    let keyword = document.getElementById("keyword-search-input").value;
+    // console.log('this is the keyword ', keyword);
+    window.location.href = "{{ url_for('prodsearch.ProductKeywordSearch', keywords='REPLACE', number=0) }}".replace("REPLACE", keyword);
+  }
+</script>
+
+{% endblock %}

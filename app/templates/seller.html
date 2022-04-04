@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if current_user.is_authenticated %}
+<h1>Your Inventory:</h1>
+
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Unit Price</th>
+      <th scope="col">In Stock?</th>
+      <th scope="col">Quantity Available</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in inv %}
+      <tr>
+        <th scope="row">{{product.pid}}</th>
+        <th scope="row">{{product.name}}</th>
+        <th scope="row">{{'%0.2f' % product.price}}</th>
+        {% if product.available%}
+          <th scope="row">Yes</th>
+        {% else %}
+          <th scope="row">No</th>
+        {% endif %}
+        <th scope="row">{{product.in_stock}}</th>
+        <th scope="row">
+          <a href="{{ url_for('profile.edititem', pid=product.pid, pname=product.name, price=product.price, stock=product.in_stock)}}" type="button" class="btn btn-primary">Edit</a>
+          <a href="{{ url_for('profile.deleteitem', pid=product.pid, pname=product.name)}}" type="button" class="btn btn-primary">Delete</a>
+        </th>
+      </tr> 
+    {% endfor %}
+  </tbody>
+</table>
+<div class="dropdown" style="display: inline-block;">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+    aria-expanded="false">
+    Sort by...
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+    <!-- <li><a class="dropdown-item" href="#" onclick="sortByPriceLow('products')">Price: Low to High</a></li> -->
+    <li><a class="dropdown-item" 
+      href="{{ url_for('profile.sellersorted', sort_category=0) }}">
+      Product ID</a>
+    </li>
+    <li><a class="dropdown-item" 
+      href="{{ url_for('profile.sellersorted', sort_category=1) }}">
+      Product Name</a>
+    </li>
+    <li><a class="dropdown-item" 
+      href="{{ url_for('profile.sellersorted', sort_category=2) }}">
+      Unit Price</a>
+    </li>
+    <li><a class="dropdown-item" 
+      href="{{ url_for('profile.sellersorted', sort_category=3) }}">
+      In Stock?</a>
+    </li>
+    <li><a class="dropdown-item" 
+      href="{{ url_for('profile.sellersorted', sort_category=4) }}">
+      Quantity Available</a>
+    </li>
+  </ul>
+</div>
+<a href="{{ url_for('profile.additem') }}" type="button" class="btn btn-secondary">Add item to inventory</a>
+<br><br>
+<br><br>
+<h2>Your Orders:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Order ID</th>
+      <th scope="col">Product ID</th>
+      <th scope="col">Shipping Address</th>
+      <th scope="col">Date</th>
+      <th scope="col">Fulfillment</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in ords %}
+      <tr>
+        <th scope="row">{{order.oid}}</th>
+        <th scope="row">{{order.pid}}</th>
+        <th scope="row">{{order.shipping_address}}</th>
+        <th scope="row">{{order.purchase_date}}</th>
+        {% if order.status %}
+        <th scope="row">Fulfilled!</th>
+        {% else %}
+        <th scope="row">
+          <a href="{{ url_for('profile.fulfillitem', oid=order.oid, pid=order.pid)}}" type="button" class="btn btn-primary">Mark fulfilled</a>
+        </th>
+        {% endif %}
+      </tr> 
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to view your seller page!</p>
+{% endif %}
+
+
+{% endblock %}

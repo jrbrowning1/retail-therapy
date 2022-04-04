@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form action='/productreviews/{{productname.pid}}/0' method="post">
+  <input type="submit" name="productreviews" class = "btn btn-secondary" value="Back to Product Reviews" />
+</form>
+<br>
+
+<h2>Review of {{productname.name}} by user {{productreviews.uid}}</h2>
+<h3>Rating: {{productreviews.rating}}/5</h2>
+<h3>Feedback: {{productreviews.comments}}</h3>
+<h3>Votes: {{productreviews.votes}}</h3>
+<h3>Time: {{productreviews.time_reviewed}}</h3>
+
+
+{% if current_user.is_authenticated %}
+{% if current_user.uid == productreviews.uid %}
+<form action='/editproductreview/product{{productname.pid}}/reviewer{{current_user.uid}}' method="post">
+  <input type="submit" name="review_details" class = "btn btn-secondary" value="Edit Review" />
+</form> 
+{% endif %}
+<form action='/addpr_comment/product{{productname.pid}}/user{{productreviews.uid}}/reviewer{{current_user.uid}}' method="post">
+  <input type="submit" name="review_details" class = "btn btn-secondary" value="Add Comment" />
+</form> 
+
+<form action="{{url_for('pr_comments.upvote',  product_number = productname.pid, user_id = productreviews.uid)}}" method="POST"> 
+  <button class="btn btn-secondary" type="submit">Upvote Review</button>
+</form> 
+
+<form action="{{url_for('pr_comments.downvote',  product_number = productname.pid, user_id = productreviews.uid)}}" method="POST"> 
+  <button class="btn btn-secondary" type="submit">Downvote Review</button>
+</form> 
+
+
+{% endif %}
+
+<table class='table table-hover table-bordered table=sort container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Date</th>
+      <th scope="col">Comment</th>
+      <th scope="col">Votes</th>
+      {% if current_user.is_authenticated %}
+      <th scope="col">Feedback</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for comment in productreviewcomments%}
+      <tr>
+        <th scope="row">{{comment.rid}}</th>
+        <td>{{comment.time_commented}}</td>
+        <td>{{comment.comment}}</td>
+        <td>{{comment.votes}}</td>
+        {% if current_user.is_authenticated %}
+        <td>
+          <div>
+            <div style = 'float: left'>
+              <form action="{{url_for('pr_comments.upvote_comment',  product_number = productname.pid, user_id = productreviews.uid, reviewer_id = comment.rid)}}" method="POST"> 
+                <button class="btn btn-secondary" type="submit">+1</button>
+              </form> 
+            </div>
+            <div style = 'float: left'>
+              <form action="{{url_for('pr_comments.downvote_comment',  product_number = productname.pid, user_id = productreviews.uid, reviewer_id = comment.rid)}}" method="POST"> 
+                <button class="btn btn-secondary" type="submit">-1</button>
+              </form>
+            </div>
+          </div>
+        
+        {% if current_user.uid == comment.rid %}
+          <form action='/editpr_comment/product{{productname.pid}}/user{{current_user.uid}}/reviewer{{comment.uid}}' method="post">
+            <input type="submit" name="review_details" class = "btn btn-secondary" value="Edit" />
+          </form> 
+        {% endif %}
+        </td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if number > 0 %}
+<form action='/pr_comments/product{{productname.pid}}/user{{productreviews.uid}}/{{number-10}}' method="post">
+  <input type="submit" name="productreviews" class = "btn btn-secondary" value="Previous Comments" />
+</form>
+{% endif %}
+
+{% if total > number+10%}
+<form action='/pr_comments/product{{productname.pid}}/user{{productreviews.uid}}/{{number+10}}' method="post">
+  <input type="submit" name="productreviews" class = "btn btn-secondary" value="More Comments" />
+</form>
+{% endif %}
+
+{% endblock %}

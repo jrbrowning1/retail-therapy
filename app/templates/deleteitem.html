@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Delete {{pname}} (ID: {{pid}})?</h2>
+<h4>This action cannot be undone.</h4>
+
+<a href="{{ url_for('profile.deleteditem', pid=pid) }}"
+                  class="btn btn-primary">Delete from Inventory</a>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Add Product Review Comment</h1>
+<h2>Review of {{productname.name}} by user {{productreviews.uid}}</h2>
+<h3>Rating: {{productreviews.rating}}/5</h2>
+<h3>Feedback: {{productreviews.comments}}</h3>
+<h3>Votes: {{productreviews.votes}}</h3>
+<h3>Time: {{productreviews.time_reviewed}}</h3>
+
+<form action="" method="post">
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.comment.label }}<br/>
+    {{ form.comment(cols = 100, rows = 10) }}<br/>
+    {% for error in form.comment.errors %}
+    <span style="color: #D24694;">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>{{ form.submit(class_="btn btn-secondary") }}</p>
+</form>
+
+<form action='/pr_comments/product{{productname.pid}}/user{{productreviews.uid}}/0' method="post">
+  <input type="submit" name="productreviews" class = "btn btn-secondary" value="Cancel" />
+</form>
+
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<a href="{{ url_for('sellers.sellers') }}" type="button" class="btn btn-secondary">Back to Sellers</a>
+
+<br></br>
+<div class="profile">
+  <h1>Welcome to {{slr.firstname}} {{slr.lastname}}'s Seller Profile!</h1>
+  <br></br>
+  
+  <article>
+    <h3>Email: {{slr.email}}</h3>
+    <h3>Address: {{slr.address}}</h3>
+</article> 
+</div>
+
+<a href="{{ url_for('sellerreviews.SellerReviews', seller_id=slr.uid, number = 0) }}" type="button" class="btn btn-secondary">See Seller Reviews</a>
+
+
+{% if current_user.is_authenticated %}
+{% if SRcheck == false  %}
+
+<form action='/addsellerreview/seller{{slr.uid}}/reviewer{{current_user.uid}}' method="POST">
+  <input type="submit" name="review_details" class="btn btn-secondary" value="Add Review" />
+</form> 
+{% endif %}
+{% endif %}
+
+{% endblock %}
